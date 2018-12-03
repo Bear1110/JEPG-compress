@@ -1,30 +1,34 @@
 fs = require('fs');
 dct = require('./FastDct')
 t = require('./table')
-let data = fs.readFileSync('img/Baboon.raw')
-
+let data = fs.readFileSync('img/Lena.raw')
 let long = ''
-/*
-let data = []
-for(let i = 0 ; i < 64 ; i++){
-    data.push(i)
-}*/
 let len = data.length
 let array = []
 for(let i = 0 ; i < len ; i++){
-    let temp =  Math.floor(i/8)
+    let temp =  Math.floor(i/512)
     if(!array[temp])
         array[temp] = []
-    array[temp][i%8] = data[i]
+    array[temp][i%512] = data[i]
 }
 
-len = array.length
+len = data.length / 64
 let squares = []
-for(let i = 0 ; i < len ; i++){//  8*8
-    let temp =  Math.floor(i/8)
-    if(!squares[temp])
-        squares[temp] = []
-    squares[temp][i%8] = array[i]
+for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
+    let square = [[],[],[],[],[],[],[],[]]
+    for(let m = 0; m < 8 ; m++){
+        for(let n = 0; n < 8 ; n++){
+            square[m][n] = array[j][k+n]
+        }
+        j++
+    }
+    squares.push(square)
+    k+=8
+    if(k == 512){
+        k = 0
+    }else{
+        j -= 8
+    }
 }
 len = squares.length
 
@@ -32,7 +36,7 @@ for(let g = 0 ; g < len ; g++){
     let gg = dct(squares[g])
     for(let i = 0 ; i < 8 ; i++)
         for(let j = 0 ; j < 8 ; j++)
-        gg[i][j] = Math.round(gg[i][j]/t.Luminance[i][j])
+            gg[i][j] = Math.round(gg[i][j]/t.Luminance[i][j])
     let row = t.ZigzagTraversal(gg)
     long += t.DCCategoryCodeWord[t.DCCategory(row[0])]+t.DCvalueCodeWord(row[0])
     let zerocount = 0
