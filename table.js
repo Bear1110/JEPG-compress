@@ -70,7 +70,6 @@ const ACCoefficientsInJPEG = [
     ['11111111001','1111111111110101','1111111111110110','1111111111110111','1111111111111000','1111111111111001','1111111111111010','1111111111111011','1111111111111100','1111111111111101','1111111111111110']
 ]
 
-
 //https://coding-interview-solutions.hackingnote.com/problems/matrix-zigzag-traversal.html
 function ZigzagTraversal(matrix) {
     let m = matrix.length//8
