@@ -65,6 +65,7 @@ for(let g = 0 ; g < len ; g++){
  * 所以decode的時候應該要先把 結尾 的100000 給刪掉
  * 如果剛好八的倍數就塞 10000000 這樣
  */
+console.log(long)
 console.log(long.length/8)
 long += '1'
 let GG = long.length % 8
