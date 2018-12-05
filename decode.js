@@ -1,4 +1,4 @@
-fs = require('fs');
+fs = require('fs')
 dct = require('./FastDct')
 t = require('./table')
 let data = fs.readFileSync('afterCompress.bear')
