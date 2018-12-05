@@ -24,9 +24,38 @@ function dct2d(block){
                 }
             }
             value = 1/4 * av * au * value;
-            dct[u].push(Math.round(value));
+            dct[u].push(value)
         }
     }
     return dct
 }
-module.exports = dct2d
+//https://gist.github.com/bellbind/eb3419516e00fdfa13f472d82fd1b495
+function idct2d(mat, w = 8, h = 8) {
+    let newMat = []
+    for(let i = 0 ,ggg = 0; i < 8 ; i++)
+        for(let j = 0 ; j < 8 ; j ++,ggg++)
+            newMat[ggg] = mat[i][j]
+    mat = newMat
+    const cos = Math.cos, PI = Math.PI, isqrt2 = 1 / Math.sqrt(2);
+    const px = PI / w, py = PI / h;
+    let temp = range(w * h, xyw => {
+        const x = xyw % w, y = (xyw - x) / w;
+        return mat.reduce((t, fuv, uvw) => {
+            const u = uvw % w, v = (uvw - u) / w;
+            const c = (u === 0 ? isqrt2 : 1) * (v === 0 ? isqrt2 : 1);
+            return t +
+                c * fuv * cos(px * (x + 0.5) * u) * cos(py * (y + 0.5) * v);
+        }, 0) / 4;
+    });
+    let result = [[],[],[],[],[],[],[],[]]
+    for( i = 0 , gg = 0; i < 8 ; i ++)
+        for(let j = 0 ; j < 8 ; j++,gg++)
+            result[i][j] =  temp[gg]+128
+    return result
+}
+// array helpers
+function range(n, map = v => v) {
+    return Array.from(Array(n), (_, i) => map(i));
+}
+exports.dct2d = dct2d
+exports.idct2d = idct2d

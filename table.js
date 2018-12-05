@@ -1,13 +1,24 @@
-const Luminance = [
-    [16,11,10,16,24,40,51,61],
-    [12,12,14,19,26,58,60,55],
-    [14,13,16,24,40,57,69,56],
-    [14,17,22,29,51,87,80,62],
-    [18,22,37,56,68,109,103,77],
-    [24,36,55,64,81,104,113,92],
-    [49,64,78,87,103,121,120,101],
-    [72,92,95,98,112,100,103,99]
-]
+function LuminanceQF(QF){
+    let Luminance = [
+        [16,11,10,16,24,40,51,61],
+        [12,12,14,19,26,58,60,55],
+        [14,13,16,24,40,57,69,56],
+        [14,17,22,29,51,87,80,62],
+        [18,22,37,56,68,109,103,77],
+        [24,36,55,64,81,104,113,92],
+        [49,64,78,87,103,121,120,101],
+        [72,92,95,98,112,100,103,99]
+    ]
+    if(QF < 50){
+        QF = 5000/QF
+    }else{
+        QF = 200-2*QF
+    }
+    for(let i = 0 ; i < 8 ; i++)
+        for(let j = 0 ; j < 8 ; j++)
+            Luminance[i][j] = Luminance[i][j] * QF / 100
+    return Luminance
+}
 
 function DCCategory(number){
     if(number == 0){
@@ -38,8 +49,13 @@ function DCCategory(number){
 }
 
 const DCCategoryCodeWord = ['00','010','011','100','101','110','1110','11110','111110','1111110','11111110','111111110']
+let decodeDCCategoryCodeWord = []
+DCCategoryCodeWord.forEach((e,i)=>{
+    decodeDCCategoryCodeWord[e] = i
+})
+
 function DCvalueCodeWord(number){
-    if(number > 0){
+    if(number >= 0){
         return number.toString(2)
     }else{
         number = -number
@@ -49,6 +65,16 @@ function DCvalueCodeWord(number){
             result = '0' + result
         return result
     }
+}
+function decodeDCvalueCodeWord(string){
+    if(string == '0')
+        return 0
+    let bitCount = string.length
+    digit = parseInt(string, 2)
+    if(digit < Math.pow(2,bitCount-1)){
+        digit = (-(Math.pow(2,bitCount)))+ 1 + digit
+    }
+    return digit
 }
 
 const ACCoefficientsInJPEG = [
@@ -69,6 +95,14 @@ const ACCoefficientsInJPEG = [
     ['','1111111111101011','1111111111101100','1111111111101101','1111111111101110','1111111111101111','1111111111110000','1111111111110001','1111111111110010','1111111111110011','1111111111110100'],
     ['11111111001','1111111111110101','1111111111110110','1111111111110111','1111111111111000','1111111111111001','1111111111111010','1111111111111011','1111111111111100','1111111111111101','1111111111111110']
 ]
+
+let decodeACCoefficientsInJPEG = []
+ACCoefficientsInJPEG.forEach((e,i)=>{
+    e.forEach((ee,ii)=>{
+        decodeACCoefficientsInJPEG[''+ee] = [i,ii] // [run,size]
+    })
+})
+decodeACCoefficientsInJPEG[''] = undefined
 
 //https://coding-interview-solutions.hackingnote.com/problems/matrix-zigzag-traversal.html
 function ZigzagTraversal(matrix) {
@@ -95,10 +129,40 @@ function ZigzagTraversal(matrix) {
     }
     return result;
 }
+//https://gist.github.com/bellbind/eb3419516e00fdfa13f472d82fd1b495
+function zigzag2square(zigzag, w = 8) {
+    console.assert(zigzag.length === w * w);
+    const square = Array(zigzag.length);
+    const max = 2 * (w - 1);
+    let i = 0;
+    for (let sum = 0; sum <= max; sum++) {
+        const start = sum < w ? 0 : sum - w + 1, end = sum < w ? sum : w - 1;
+        if (sum % 2 === 0) {
+            for (let x = start; x <= end; x++) {
+                const y = sum - x;
+                square[y * w + x] = zigzag[i++];
+            }
+        } else {
+            for (let x = end; x >= start; x--) {
+                const y = sum - x;
+                square[y * w + x] = zigzag[i++];
+            }
+        }
+    }//
+    let result = [[],[],[],[],[],[],[],[]]
+    for( i = 0 , gg = 0; i < 8 ; i ++)
+        for(let j = 0 ; j < 8 ; j++,gg++)
+            result[i][j] =  square[gg]
+    return result;
+}
 
-exports.Luminance = Luminance
+exports.LuminanceQF = LuminanceQF
 exports.ZigzagTraversal = ZigzagTraversal
 exports.DCCategory = DCCategory
 exports.DCCategoryCodeWord = DCCategoryCodeWord
+exports.decodeDCCategoryCodeWord = decodeDCCategoryCodeWord
 exports.DCvalueCodeWord = DCvalueCodeWord
+exports.decodeDCvalueCodeWord = decodeDCvalueCodeWord
 exports.ACCoefficientsInJPEG = ACCoefficientsInJPEG
+exports.decodeACCoefficientsInJPEG = decodeACCoefficientsInJPEG
+exports.zigzag2square = zigzag2square
