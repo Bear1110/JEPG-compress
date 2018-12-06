@@ -1,8 +1,8 @@
 fs = require('fs');
 dct = require('./FastDct')
 t = require('./table')
-const QF = 50
-let data = fs.readFileSync('img/LenaRGB.raw')
+const QF = 90
+let data = fs.readFileSync('img/BaboonRGB.raw')
 let long = ''
 let len = data.length
 let array = new Array(262144)
@@ -84,28 +84,24 @@ for(let i = 0 ; i < len ; i++){
         bigbicture[temp] = []
     bigbicture[temp][i%512] = array[i][1] //cb
 }
-len = 4096
+len = 1024
 squares = []
-for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
+for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 ; 256*256/8/8 = 1024 
     let square = [[],[],[],[],[],[],[],[]]
-    for(let m = 0; m < 8 ; m+=2){
-        for(let n = 0; n < 8 ; n+=2){
-            square[m][n] = bigbicture[j][k+n] //左上
-            square[m][n+1] = bigbicture[j][k+n] //右上
-            square[m+1][n] = bigbicture[j][k+n] //左下
-            square[m+1][n+1] = bigbicture[j][k+n] //右下
+    for(let m = 0; m < 8 ; m++){
+        for(let n = 0; n < 8 ; n++){
+            square[m][n] = bigbicture[j][k+n*2]
         }
         j+=2
     }
     squares.push(square)
-    k+=8
+    k+=16
     if(k == 512){
         k = 0
     }else{
-        j -= 8
+        j -= 16
     }
 }
-
 len = squares.length
 for(let g = 0 ; g < len ; g++){
     let gg = dct.dct2d(squares[g])    
@@ -136,7 +132,6 @@ for(let g = 0 ; g < len ; g++){
     }
     long += t.ACCoefficientsInJPEG[0][0] //EOB
 }
-
 ///////////////////////////////////////////////////////////////////////做 cr 4:1:1
 len = 262144
 bigbicture = new Array(512)
@@ -146,28 +141,24 @@ for(let i = 0 ; i < len ; i++){
         bigbicture[temp] = []
     bigbicture[temp][i%512] = array[i][2] //cb
 }
-len = 4096
+len = 1024
 squares = []
-for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
+for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 ; 256*256/8/8 = 1024 
     let square = [[],[],[],[],[],[],[],[]]
-    for(let m = 0; m < 8 ; m+=2){
-        for(let n = 0; n < 8 ; n+=2){
-            square[m][n] = bigbicture[j][k+n] //左上
-            square[m][n+1] = bigbicture[j][k+n] //右上
-            square[m+1][n] = bigbicture[j][k+n] //左下
-            square[m+1][n+1] = bigbicture[j][k+n] //右下
+    for(let m = 0; m < 8 ; m++){
+        for(let n = 0; n < 8 ; n++){
+            square[m][n] = bigbicture[j][k+n*2]
         }
         j+=2
     }
     squares.push(square)
-    k+=8
+    k+=16
     if(k == 512){
         k = 0
     }else{
-        j -= 8
+        j -= 16
     }
 }
-
 len = squares.length
 for(let g = 0 ; g < len ; g++){
     let gg = dct.dct2d(squares[g])    
@@ -198,7 +189,7 @@ for(let g = 0 ; g < len ; g++){
     }
     long += t.ACCoefficientsInJPEG[0][0] //EOB
 }
-
+console.log(long.length/8)
 /**
  * 最後塞 100000 之類的東西
  * 所以decode的時候應該要先把 結尾 的100000 給刪掉
@@ -209,7 +200,6 @@ let GG = long.length % 8
 if(GG != 0)
     for(let KK = 8 - GG ; KK > 0; KK--)
         long += '0'
-console.log(long.substring(414630))
 var buffer = new Uint8Array(long.length / 8);
 let temp = '', bufferIndex = 0
 for(let i = 0; i < long.length ; i++){

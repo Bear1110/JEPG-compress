@@ -1,9 +1,9 @@
 fs = require('fs')
 dct = require('./FastDct')
 t = require('./table')
+const QF = 90
 let data = fs.readFileSync('afterCompress.bear')
 let len = data.length , longSting = ''
-const QF = 50
 for(let i = 0 ; i < len ; i++){    
     let bin = data[i].toString(2);
     while(bin.length != 8){
@@ -114,7 +114,7 @@ len = longSting.length
 readTemp = ''
 squares = []
 
-while(squares.length != 4096){
+while(squares.length != 1024){
     readTemp = ''
     let zigzag = []
     //dc
@@ -171,26 +171,28 @@ for(let i = 0 ; i < len ; i++){
     gg = dct.idct2d(gg)
     squares[i] = gg
 }
-for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
+for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 1024 to 4096
     let square = squares[i]
     for(let m = 0; m < 8 ; m++){
         for(let n = 0; n < 8 ; n++){
-            bigPicture[j][k+n][1] = square[m][n]
+            bigPicture[j][k+n*2][1] = square[m][n] //左上
+            bigPicture[j][k+n*2+1][1] = square[m][n] //右上
+            bigPicture[j+1][k+n*2][1] = square[m][n] //左下
+            bigPicture[j+1][k+n*2+1][1] = square[m][n] //右下
         }
-        j++
+        j+=2
     }
-    k+=8
+    k+=16
     if(k == 512){
         k = 0
     }else{
-        j -= 8
+        j -= 16
     }
 }
-
 /////////////////////////////////////////////////////////////////////////////cr
 readTemp = ''
 squares = []
-while(squares.length != 4096){
+while(squares.length != 1024){
     readTemp = ''
     let zigzag = []
     //dc
@@ -246,19 +248,22 @@ for(let i = 0 ; i < len ; i++){
     gg = dct.idct2d(gg)
     squares[i] = gg
 }
-for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
+for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 1024 to 4096
     let square = squares[i]
     for(let m = 0; m < 8 ; m++){
         for(let n = 0; n < 8 ; n++){
-            bigPicture[j][k+n][2] = square[m][n]
+            bigPicture[j][k+n*2][2] = square[m][n] //左上
+            bigPicture[j][k+n*2+1][2] = square[m][n] //右上
+            bigPicture[j+1][k+n*2][2] = square[m][n] //左下
+            bigPicture[j+1][k+n*2+1][2] = square[m][n] //右下
         }
-        j++
+        j+=2
     }
-    k+=8
+    k+=16
     if(k == 512){
         k = 0
     }else{
-        j -= 8
+        j -= 16
     }
 }
 
