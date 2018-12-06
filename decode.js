@@ -26,6 +26,7 @@ len = longSting.length
 let bitI = 0
 let readTemp = ''
 let squares = []
+let dpcm = 0
 while(squares.length != 4096){
     readTemp = ''
     let zigzag = []
@@ -35,14 +36,17 @@ while(squares.length != 4096){
     }
     let ssss = t.decodeDCCategoryCodeWord[readTemp]
     readTemp = ''
+    let x
     if(ssss ==0){
         readTemp += longSting.charAt(bitI++)
-    }else{        
-        for(let ggg = 0 ; ggg < ssss; ggg++){
-            readTemp += longSting.charAt(bitI++)
-        }
-    }    
-    zigzag.push(t.decodeDCvalueCodeWord(readTemp)) // first dc
+        x = dpcm
+    }else{
+        for(let ggg = 0 ; ggg < ssss; ggg++)
+            readTemp += longSting.charAt(bitI++)        
+        x = t.decodeDCvalueCodeWord(readTemp)+dpcm
+    }
+    dpcm = x
+    zigzag.push(x) // first dc
     while(zigzag.length != 64){//AC
         readTemp = ''
         while(t.decodeACCoefficientsInJPEG[readTemp]  == undefined ){

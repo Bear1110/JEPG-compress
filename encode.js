@@ -32,6 +32,7 @@ for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
     }
 }
 len = squares.length
+let dpcm = 0
 const Luminance = t.LuminanceQF(QF)
 for(let g = 0 ; g < len ; g++){
     
@@ -42,7 +43,9 @@ for(let g = 0 ; g < len ; g++){
     
     let row = t.ZigzagTraversal(gg)
     row = row.map(e=>Math.round(e))
-    long += t.DCCategoryCodeWord[t.DCCategory(row[0])]+t.DCvalueCodeWord(row[0])
+    let FirstDc =  row[0] - dpcm
+    dpcm = row[0]
+    long += t.DCCategoryCodeWord[t.DCCategory(FirstDc)]+t.DCvalueCodeWord(FirstDc)
     let zerocount = 0
     let allnumber = row.filter(e=>e!=0)
     for(let i = 1 ,k = 1; i < 64 ; i++){
