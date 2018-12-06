@@ -67,8 +67,6 @@ function DCvalueCodeWord(number){
     }
 }
 function decodeDCvalueCodeWord(string){
-    if(string == '0')
-        return 0
     let bitCount = string.length
     digit = parseInt(string, 2)
     if(digit < Math.pow(2,bitCount-1)){

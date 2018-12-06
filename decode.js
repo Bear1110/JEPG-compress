@@ -1,9 +1,9 @@
 fs = require('fs')
 dct = require('./FastDct')
 t = require('./table')
+const QF = 5
 let data = fs.readFileSync('afterCompress.bear')
 let len = data.length , longSting = ''
-const QF = 50
 for(let i = 0 ; i < len ; i++){    
     let bin = data[i].toString(2);
     while(bin.length != 8){
@@ -13,10 +13,14 @@ for(let i = 0 ; i < len ; i++){
 }
 //拿掉最後的 10000
 len = longSting.length
-do{
+if(longSting.charAt(len-1) == '1'){
     longSting = longSting.substring(0,--len)
+}else{    
+    do{
+        longSting = longSting.substring(0,--len)
+    }
+    while(longSting.charAt(len-1) != '1')
 }
-while(longSting.charAt(len-1) != '1')
 
 len = longSting.length
 let bitI = 0
@@ -40,7 +44,7 @@ while(squares.length != 4096){
     }    
     zigzag.push(t.decodeDCvalueCodeWord(readTemp)) // first dc
     while(zigzag.length != 64){//AC
-        readTemp = ''    
+        readTemp = ''
         while(t.decodeACCoefficientsInJPEG[readTemp]  == undefined ){
             readTemp += longSting.charAt(bitI++)
         }
@@ -62,6 +66,10 @@ while(squares.length != 4096){
                 readTemp += longSting.charAt(bitI++)
             zigzag.push(t.decodeDCvalueCodeWord(readTemp))
         }
+    }
+    if(readTemp != '1010'){//這邊要處理 剛好 64個 的數字
+        for(let i = 0 ; i < 4 ; i++)
+            longSting.charAt(bitI++) //1
     }
     squares.push(t.zigzag2square(zigzag))
 }

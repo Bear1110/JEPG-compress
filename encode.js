@@ -1,7 +1,7 @@
 fs = require('fs');
 dct = require('./FastDct')
 t = require('./table')
-const QF = 50
+const QF = 5
 let data = fs.readFileSync('img/Lena.raw')
 let long = ''
 let len = data.length
@@ -34,10 +34,12 @@ for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
 len = squares.length
 const Luminance = t.LuminanceQF(QF)
 for(let g = 0 ; g < len ; g++){
+    
     let gg = dct.dct2d(squares[g])    
     for(let i = 0 ; i < 8 ; i++)
         for(let j = 0 ; j < 8 ; j++)
             gg[i][j] = gg[i][j]/Luminance[i][j]
+    
     let row = t.ZigzagTraversal(gg)
     row = row.map(e=>Math.round(e))
     long += t.DCCategoryCodeWord[t.DCCategory(row[0])]+t.DCvalueCodeWord(row[0])
@@ -67,6 +69,8 @@ for(let g = 0 ; g < len ; g++){
  * 所以decode的時候應該要先把 結尾 的100000 給刪掉
  * 如果剛好八的倍數就塞 10000000 這樣
  */
+console.log(long.length/8)
+
 long += '1'
 let GG = long.length % 8
 if(GG != 0)

@@ -77,6 +77,10 @@ while(squares.length != 4096){
             zigzag.push(t.decodeDCvalueCodeWord(readTemp))
         }
     }
+    if(readTemp != '1010'){//這邊要處理 剛好 64個 的數字
+        for(let i = 0 ; i < 4 ; i++)
+            longSting.charAt(bitI++) //1
+    }
     squares.push(t.zigzag2square(zigzag))
 }
 
@@ -88,9 +92,6 @@ for(let i = 0 ; i < len ; i++){
         for(let j = 0 ; j < 8 ; j++)
             gg[i][j] = gg[i][j]*Luminance[i][j]
     gg = dct.idct2d(gg)
-    for(let i = 0 ; i < 8 ; i++)
-        for(let j = 0 ; j < 8 ; j++)
-            gg[i][j] = Math.round(gg[i][j])
     squares[i] = gg
 }
 for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
@@ -154,6 +155,10 @@ while(squares.length != 4096){
             zigzag.push(t.decodeDCvalueCodeWord(readTemp))
         }
     }
+    if(readTemp != '1010'){//這邊要處理 剛好 64個 的數字
+        for(let i = 0 ; i < 4 ; i++)
+            longSting.charAt(bitI++) //1
+    }
     squares.push(t.zigzag2square(zigzag))
 }
 
@@ -164,9 +169,6 @@ for(let i = 0 ; i < len ; i++){
         for(let j = 0 ; j < 8 ; j++)
             gg[i][j] = gg[i][j]*Luminance[i][j]
     gg = dct.idct2d(gg)
-    for(let i = 0 ; i < 8 ; i++)
-        for(let j = 0 ; j < 8 ; j++)
-            gg[i][j] = Math.round(gg[i][j])
     squares[i] = gg
 }
 for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
@@ -229,6 +231,10 @@ while(squares.length != 4096){
             zigzag.push(t.decodeDCvalueCodeWord(readTemp))
         }
     }
+    if(readTemp != '1010'){//這邊要處理 剛好 64個 的數字
+        for(let i = 0 ; i < 4 ; i++)
+            longSting.charAt(bitI++) //1
+    }
     squares.push(t.zigzag2square(zigzag))
 }
 len = squares.length
@@ -238,9 +244,6 @@ for(let i = 0 ; i < len ; i++){
         for(let j = 0 ; j < 8 ; j++)
             gg[i][j] = gg[i][j]*Luminance[i][j]
     gg = dct.idct2d(gg)
-    for(let i = 0 ; i < 8 ; i++)
-        for(let j = 0 ; j < 8 ; j++)
-            gg[i][j] = Math.round(gg[i][j])
     squares[i] = gg
 }
 for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
@@ -266,4 +269,4 @@ for(let i = 0,k = 0 ; i < 512 ; i++)
         buffer[k++] = Math.round(bigPicture[i][j][0] - 0.344136*(bigPicture[i][j][1]-128) - 0.714136*(bigPicture[i][j][2]-128))
         buffer[k++] = Math.round(bigPicture[i][j][0] + 1.772*(bigPicture[i][j][1]-128))
     }
-fs.writeFileSync('origisn.raw', buffer)
+fs.writeFileSync('origin.raw', buffer)

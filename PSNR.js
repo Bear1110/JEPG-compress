@@ -8,9 +8,7 @@ let MSE = 0
 for(let i =  0; i < len ; i++){
     MSE += (orign[i] - after[i]) * (orign[i] - after[i])
 }
-console.log(MSE)
-MSE /= len 
-console.log(MSE)
+MSE /= len
 //PSNR
-let PSNR = 10 * Math.log(255*255/MSE)
+let PSNR = 10 * Math.log10(255*255/MSE)
 console.log(PSNR)
