@@ -1,7 +1,8 @@
 fs = require('fs')
 dct = require('./FastDct')
 t = require('./table')
-const QF = 90
+let config = JSON.parse(fs.readFileSync('./config.json'))
+const QF = config.QF
 let data = fs.readFileSync('afterCompress.bear')
 let len = data.length , longSting = ''
 for(let i = 0 ; i < len ; i++){    
@@ -35,7 +36,7 @@ len = longSting.length
 let bitI = 0
 let readTemp = ''
 let squares = []
-
+let dpcm = 0
 while(squares.length != 4096){
     readTemp = ''
     let zigzag = []
@@ -45,14 +46,17 @@ while(squares.length != 4096){
     }
     let ssss = t.decodeDCCategoryCodeWord[readTemp]
     readTemp = ''
+    let x
     if(ssss ==0){
         readTemp += longSting.charAt(bitI++)
+        x = dpcm
     }else{        
-        for(let ggg = 0 ; ggg < ssss; ggg++){
+        for(let ggg = 0 ; ggg < ssss; ggg++)
             readTemp += longSting.charAt(bitI++)
-        }
+        x = t.decodeDCvalueCodeWord(readTemp)+dpcm
     }    
-    zigzag.push(t.decodeDCvalueCodeWord(readTemp)) // first dc
+    dpcm = x
+    zigzag.push(x) // first dc
     while(zigzag.length != 64){//AC
         readTemp = ''    
         while(t.decodeACCoefficientsInJPEG[readTemp]  == undefined ){
@@ -113,7 +117,7 @@ for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
 len = longSting.length
 readTemp = ''
 squares = []
-
+dpcm = 0
 while(squares.length != 1024){
     readTemp = ''
     let zigzag = []
@@ -123,14 +127,17 @@ while(squares.length != 1024){
     }
     let ssss = t.decodeDCCategoryCodeWord[readTemp]
     readTemp = ''
+    let x
     if(ssss ==0){
         readTemp += longSting.charAt(bitI++)
+        x = dpcm
     }else{        
-        for(let ggg = 0 ; ggg < ssss; ggg++){
+        for(let ggg = 0 ; ggg < ssss; ggg++)
             readTemp += longSting.charAt(bitI++)
-        }
+        x = t.decodeDCvalueCodeWord(readTemp)+dpcm
     }    
-    zigzag.push(t.decodeDCvalueCodeWord(readTemp)) // first dc
+    dpcm = x
+    zigzag.push(x) // first dc
     while(zigzag.length != 64){//AC
         readTemp = ''    
         while(t.decodeACCoefficientsInJPEG[readTemp]  == undefined ){
@@ -192,6 +199,7 @@ for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 1024 to 4096
 /////////////////////////////////////////////////////////////////////////////cr
 readTemp = ''
 squares = []
+dpcm = 0
 while(squares.length != 1024){
     readTemp = ''
     let zigzag = []
@@ -201,14 +209,17 @@ while(squares.length != 1024){
     }
     let ssss = t.decodeDCCategoryCodeWord[readTemp]
     readTemp = ''
+    let x
     if(ssss ==0){
         readTemp += longSting.charAt(bitI++)
+        x = dpcm
     }else{        
-        for(let ggg = 0 ; ggg < ssss; ggg++){
+        for(let ggg = 0 ; ggg < ssss; ggg++)
             readTemp += longSting.charAt(bitI++)
-        }
+        x = t.decodeDCvalueCodeWord(readTemp)+dpcm
     }    
-    zigzag.push(t.decodeDCvalueCodeWord(readTemp)) // first dc
+    dpcm = x
+    zigzag.push(x) // first dc
     while(zigzag.length != 64){//AC
         readTemp = ''    
         while(t.decodeACCoefficientsInJPEG[readTemp]  == undefined ){

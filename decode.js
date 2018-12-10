@@ -1,7 +1,8 @@
 fs = require('fs')
 dct = require('./FastDct')
 t = require('./table')
-const QF = 5
+let config = JSON.parse(fs.readFileSync('./config.json'))
+const QF = config.QF
 let data = fs.readFileSync('afterCompress.bear')
 let len = data.length , longSting = ''
 for(let i = 0 ; i < len ; i++){    

@@ -1,8 +1,9 @@
 fs = require('fs');
 dct = require('./FastDct')
 t = require('./table')
-const QF = 90
-let data = fs.readFileSync('img/BaboonRGB.raw')
+let config = JSON.parse(fs.readFileSync('./config.json'))
+const QF = config.QF
+let data = fs.readFileSync(config.img)
 let long = ''
 let len = data.length
 let array = new Array(262144)
@@ -45,6 +46,7 @@ for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 4096
 }
 
 len = squares.length
+let dpcm = 0
 const Luminance = t.LuminanceQF(QF)
 for(let g = 0 ; g < len ; g++){
     let gg = dct.dct2d(squares[g])    
@@ -53,7 +55,9 @@ for(let g = 0 ; g < len ; g++){
             gg[i][j] = gg[i][j]/Luminance[i][j]
     let row = t.ZigzagTraversal(gg)
     row = row.map(e=>Math.round(e))
-    long += t.DCCategoryCodeWord[t.DCCategory(row[0])]+t.DCvalueCodeWord(row[0])
+    let FirstDc =  row[0] - dpcm
+    dpcm = row[0]
+    long += t.DCCategoryCodeWord[t.DCCategory(FirstDc)]+t.DCvalueCodeWord(FirstDc)
     let zerocount = 0
     let allnumber = row.filter(e=>e!=0)
     for(let i = 1 ,k = 1; i < 64 ; i++){
@@ -102,6 +106,7 @@ for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 ; 256*256/8/8 = 1024
         j -= 16
     }
 }
+dpcm = 0
 len = squares.length
 for(let g = 0 ; g < len ; g++){
     let gg = dct.dct2d(squares[g])    
@@ -110,7 +115,9 @@ for(let g = 0 ; g < len ; g++){
             gg[i][j] = gg[i][j]/Luminance[i][j]
     let row = t.ZigzagTraversal(gg)
     row = row.map(e=>Math.round(e))
-    long += t.DCCategoryCodeWord[t.DCCategory(row[0])]+t.DCvalueCodeWord(row[0])
+    let FirstDc =  row[0] - dpcm
+    dpcm = row[0]
+    long += t.DCCategoryCodeWord[t.DCCategory(FirstDc)]+t.DCvalueCodeWord(FirstDc)
     let zerocount = 0
     let allnumber = row.filter(e=>e!=0)
     for(let i = 1 ,k = 1; i < 64 ; i++){
@@ -160,6 +167,7 @@ for(let i = 0 , j = 0, k = 0; i < len ; i++){//  8*8 ; 256*256/8/8 = 1024
     }
 }
 len = squares.length
+dpcm = 0
 for(let g = 0 ; g < len ; g++){
     let gg = dct.dct2d(squares[g])    
     for(let i = 0 ; i < 8 ; i++)
@@ -167,7 +175,9 @@ for(let g = 0 ; g < len ; g++){
             gg[i][j] = gg[i][j]/Luminance[i][j]
     let row = t.ZigzagTraversal(gg)
     row = row.map(e=>Math.round(e))
-    long += t.DCCategoryCodeWord[t.DCCategory(row[0])]+t.DCvalueCodeWord(row[0])
+    let FirstDc =  row[0] - dpcm
+    dpcm = row[0]
+    long += t.DCCategoryCodeWord[t.DCCategory(FirstDc)]+t.DCvalueCodeWord(FirstDc)
     let zerocount = 0
     let allnumber = row.filter(e=>e!=0)
     for(let i = 1 ,k = 1; i < 64 ; i++){

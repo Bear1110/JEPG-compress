@@ -1,8 +1,9 @@
 fs = require('fs');
 dct = require('./FastDct')
 t = require('./table')
-const QF = 5
-let data = fs.readFileSync('img/Lena.raw')
+let config = JSON.parse(fs.readFileSync('./config.json'))
+const QF = config.QF
+let data = fs.readFileSync(config.img)
 let long = ''
 let len = data.length
 let array = []
